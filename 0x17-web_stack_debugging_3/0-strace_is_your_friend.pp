@@ -1,19 +1,9 @@
-# A puppet manuscript to replace a line in a file on a server
-
-$file_to_edit = '/var/www/html/wp-settings.php'
-
-#replace line containing "phpp" with "php"
-
-exec { 'replace_line':
-  command => "sed -i 's/phpp/php/g' ${file_to_edit}",
-  path    => ['/bin','/usr/bin']
-} 
-
-
-
-
-
-
-
-
-
+# This puppet manifest replaces a type in a wordpress config file and restarts
+file { '/var/www/html/wp-settings.php':
+  ensure => present,
+}
+-> exec { 'sed file':
+  command => 'sed -i \'s/class-wp-locale.phpp/class-wp-locale.php/\' wp-settings.php; apache2ctl restart',
+  cwd     => '/var/www/html',
+  path    => ['/bin/', '/usr/sbin/'],
+}
